@@ -66,7 +66,8 @@ export default defineComponent({
       const chosenIDs: number[] = []
       try {
         // shuffle to ensure initial randomness
-        shuffle(gang).forEach(current => {
+        // use a copy to maintain original order in first view
+        shuffle([...gang]).forEach(current => {
           const availableChoices = gang
             // exclude current dude
             .filter(d => d.id !== current.id)
