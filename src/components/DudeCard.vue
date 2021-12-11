@@ -24,7 +24,7 @@ export default defineComponent({
 }
 
 .dude-card__image {
-  @apply w-24 h-24 rounded-full border-purple-400 border-4 object-cover;
+  @apply w-12 h-12 sm:w-24 sm:h-24 rounded-full border-purple-400 border-4 object-cover;
 }
 
 .dude-card__title {

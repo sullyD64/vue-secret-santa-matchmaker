@@ -43,7 +43,7 @@ export default defineComponent({
 }
 
 .match-icon {
-  @apply block w-12 h-12 mt-4 bg-purple-700;
+  @apply block w-8 h-8 sm:w-12 sm:h-12 mt-4 bg-purple-700;
 }
 
 .match-icon__arrow {
