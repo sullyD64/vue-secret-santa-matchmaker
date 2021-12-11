@@ -2,13 +2,13 @@
   <main class="main container mx-auto">
     <header class="text-center">
       <section class="mb-4">
-        <h1 class="mt-12">🎅Secret SantaLombrico Matchmaker 2020🎄</h1>
-        <p class="italic">Covid Edition</p>
+        <h1 class="mt-12">🎅Secret SantaLombrico Matchmaker 2021🎄</h1>
+        <p class="italic"><strong>Terza Dose</strong> Edition</p>
       </section>
       <button class="btn" @click="getMatches">Genera coppie</button>
       <button class="btn" @click="resetMatches">Reset</button>
       <p class="mt-4">
-        La generazione delle coppie tiene conto dei regali effettuati nelle precedenti edizioni (2019, 2018)
+        La generazione delle coppie tiene conto dei regali effettuati nelle precedenti edizioni (2020, 2019, 2018)
       </p>
     </header>
 
@@ -21,7 +21,7 @@
     <div class="card" v-if="!matches.length">
       <h2 class="card__title">Partecipanti</h2>
       <div class="dude-list">
-        <DudeCard v-for="dude in gang" :key="dude.id" :name="dude.name" />
+        <DudeCard v-for="dude in activeGang" :key="dude.id" :name="dude.name" />
       </div>
     </div>
     <div class="card" v-else>
@@ -37,13 +37,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from "vue"
-import { gang } from "@/data"
-import { Dude, Match } from "@/types"
-import { capitalize, getNamesFromIDs, matchToString } from "@/utils"
-import shuffle from "shuffle-array"
 import DudeCard from "@/components/DudeCard.vue"
 import MatchCard from "@/components/MatchCard.vue"
+import { gang } from "@/data"
+import { Dude, Match } from "@/types"
+import shuffle from "shuffle-array"
+import { defineComponent, ref, Ref } from "vue"
+import { capitalize, getNamesFromIDs, isActiveDude, matchToString } from "./utils"
 
 export default defineComponent({
   components: {
@@ -59,6 +59,14 @@ export default defineComponent({
       return arr[Math.floor(Math.random() * arr.length)]
     }
 
+    // get only active gang members
+    const activeGang = gang
+      .filter(d => d.active)
+      .map(d => {
+        d.prev = d.prev.map(id => (isActiveDude(id) ? id : null))
+        return d
+      })
+
     const getMatches = (): void => {
       console.clear()
       errorMsg.value = ""
@@ -67,8 +75,8 @@ export default defineComponent({
       try {
         // shuffle to ensure initial randomness
         // use a copy to maintain original order in first view
-        shuffle([...gang]).forEach(current => {
-          const availableChoices = gang
+        shuffle([...activeGang]).forEach(current => {
+          const availableChoices = activeGang
             // exclude current dude
             .filter(d => d.id !== current.id)
             // exclude already chosen dudes (current edition)
@@ -86,6 +94,7 @@ export default defineComponent({
           console.groupEnd()
 
           if (!availableChoices.length) {
+            console.log(current.prev)
             throw new Error(`
               Nessuna scelta compatibile rimasta per <strong>${name}</strong>.<br />
               Ero arrivato a: ${matchedStrings}, <br />
@@ -102,7 +111,7 @@ export default defineComponent({
       } catch ({ message }) {
         console.log(message)
         matches.value = []
-        errorMsg.value = message
+        errorMsg.value = message as string
       }
     }
 
@@ -115,13 +124,10 @@ export default defineComponent({
     // getMatches()
 
     return {
-      gang,
+      activeGang,
       matches,
       errorMsg,
-      capitalize,
-      getNamesFromIDs,
       getMatches,
-      matchToString,
       resetMatches
     }
   }

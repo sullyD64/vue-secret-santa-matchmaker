@@ -1,7 +1,10 @@
+export type DudeIDRef = number | null
+
 export interface Dude {
   id: number
   name: string
-  prev: [number | null, number | null]
+  active: boolean
+  prev: DudeIDRef[]
 }
 
 export interface Match {
