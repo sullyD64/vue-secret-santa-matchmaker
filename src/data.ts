@@ -9,7 +9,7 @@ export const gang: Dude[] = [
   { id: 6, active: true, name: "picci", prev: [4, 1, 5] },
   { id: 7, active: true, name: "sexy", prev: [11, null, null] },
   { id: 8, active: true, name: "stef", prev: [2, 4, 11] },
-  { id: 9, active: true, name: "sully", prev: [12, 8, 2] },
+  { id: 9, active: true, name: "sully", prev: [12, 7, 2] },
   { id: 10, active: true, name: "teddy", prev: [null, 6, 1] },
   { id: 11, active: true, name: "zigno", prev: [9, 10, 3] },
   { id: 12, active: false, name: "rob", prev: [9, 1, null] }
