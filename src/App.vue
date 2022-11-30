@@ -2,13 +2,14 @@
   <main class="main container mx-auto">
     <header class="text-center">
       <section class="mb-4">
-        <h1 class="mt-12">🎅Secret SantaLombrico Matchmaker 2021🎄</h1>
-        <p class="italic"><strong>Terza Dose</strong> Edition</p>
+        <h1 class="mt-12">🎅Secret SantaLombrico Matchmaker 2022🎄</h1>
+        <p class="italic"><strong>Mondiali</strong> Edition</p>
       </section>
-      <button class="btn" @click="getMatches">Genera coppie</button>
+      <button class="btn" @click="() => getMatches(true)">Genera coppie</button>
       <button class="btn" @click="resetMatches">Reset</button>
       <p class="mt-4">
-        La generazione delle coppie tiene conto dei regali effettuati nelle precedenti edizioni (2020, 2019, 2018)
+        La generazione delle coppie tiene conto dei regali effettuati nelle ultime due edizioni (2021, 2020). Non tiene
+        conto delle edizioni 2019 e 2018.
       </p>
     </header>
 
@@ -20,7 +21,7 @@
 
     <div class="card" v-if="!matches.length">
       <h2 class="card__title">Partecipanti</h2>
-      <div class="dude-list">
+      <div class="dude-list" style="gap: 1rem">
         <DudeCard v-for="dude in activeGang" :key="dude.id" :name="dude.name" />
       </div>
     </div>
@@ -52,22 +53,28 @@ export default defineComponent({
   },
 
   setup() {
-    const matches: Ref<Match[]> = ref([])
-    const errorMsg: Ref<string> = ref("")
+    const matches = ref<Match[]>([])
+    const errorMsg = ref("")
 
     const pick = (arr: Dude[]): Dude => {
       return arr[Math.floor(Math.random() * arr.length)]
     }
 
+    const CUT = 2
+
     // get only active gang members
     const activeGang = gang
       .filter(d => d.active)
+      .map(d => {
+        d.prev = d.prev.slice(-CUT)
+        return d
+      })
       .map(d => {
         d.prev = d.prev.map(id => (isActiveDude(id) ? id : null))
         return d
       })
 
-    const getMatches = (): void => {
+    const getMatches = (autoRetry?: boolean) => {
       console.clear()
       errorMsg.value = ""
       matches.value = []
@@ -110,12 +117,17 @@ export default defineComponent({
         })
       } catch ({ message }) {
         console.log(message)
+
         matches.value = []
+        if (autoRetry) {
+          getMatches(autoRetry)
+          return
+        }
         errorMsg.value = message as string
       }
     }
 
-    const resetMatches = (): void => {
+    const resetMatches = () => {
       matches.value = []
       errorMsg.value = ""
     }
@@ -165,7 +177,7 @@ export default defineComponent({
 }
 
 .dude-list {
-  @apply flex flex-wrap space-x-4;
+  @apply flex flex-wrap;
 }
 
 .matches-list {

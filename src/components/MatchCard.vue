@@ -7,7 +7,8 @@
     <DudeCard :name="match.to.name" />
     <span class="spacer"></span>
     <span class="match-previous">
-      (precedenti per {{ capitalize(match.from.name) }}: {{ getNamesFromIDs(match.from.prev) }})
+      precedenti per {{ capitalize(match.from.name) }}:
+      {{ match.from.prev.filter(id => id !== null).length ? getNamesFromIDs(match.from.prev) : "nessuno" }}
     </span>
   </div>
 </template>
