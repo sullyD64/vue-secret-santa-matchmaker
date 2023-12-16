@@ -2,14 +2,14 @@
   <main class="main container mx-auto">
     <header class="text-center">
       <section class="mb-4">
-        <h1 class="mt-12">🎅Secret SantaLombrico Matchmaker 2022🎄</h1>
-        <p class="italic"><strong>Mondiali</strong> Edition</p>
+        <h1 class="mt-12">🎅Secret SantaLombrico Matchmaker 2023🎄</h1>
+        <p class="italic"><strong>Bignami</strong> edition</p>
       </section>
       <button class="btn" @click="() => getMatches(true)">Genera coppie</button>
       <button class="btn" @click="resetMatches">Reset</button>
       <p class="mt-4">
-        La generazione delle coppie tiene conto dei regali effettuati nelle ultime due edizioni (2021, 2020). Non tiene
-        conto delle edizioni 2019 e 2018.
+        Dato il numero ridotto di partecipanti attivi, la generazione delle coppie tiene conto di tutti gli abbinamenti
+        delle edizioni precedenti.
       </p>
     </header>
 
@@ -43,7 +43,7 @@ import MatchCard from "@/components/MatchCard.vue"
 import { gang } from "@/data"
 import { Dude, Match } from "@/types"
 import shuffle from "shuffle-array"
-import { defineComponent, ref, Ref } from "vue"
+import { defineComponent, ref } from "vue"
 import { capitalize, getNamesFromIDs, isActiveDude, matchToString } from "./utils"
 
 export default defineComponent({
@@ -60,7 +60,7 @@ export default defineComponent({
       return arr[Math.floor(Math.random() * arr.length)]
     }
 
-    const CUT = 2
+    const CUT = 6
 
     // get only active gang members
     const activeGang = gang
@@ -115,7 +115,8 @@ export default defineComponent({
 
           matches.value.push({ from: current, to: picked })
         })
-      } catch ({ message }) {
+      } catch (error) {
+        const message = (error as Error).message
         console.log(message)
 
         matches.value = []
@@ -123,7 +124,7 @@ export default defineComponent({
           getMatches(autoRetry)
           return
         }
-        errorMsg.value = message as string
+        errorMsg.value = message
       }
     }
 
